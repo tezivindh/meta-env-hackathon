@@ -21,14 +21,9 @@ if API_KEY:
 def check_server():
     try:
         res = requests.get(f"{BASE_URL}/health", timeout=3)
-        if res.status_code == 200:
-            print("[INFO] Server is healthy\n")
-            return True
+        return res.status_code == 200
     except:
-        pass
-
-    print("[ERROR] Server is not running")
-    return False
+        return False
 
 
 def safe_post(url, json_data, retries=3):
@@ -84,25 +79,18 @@ def generate_review(code: str) -> str:
     else:
         return "The code can be optimized for better performance using list comprehension instead of a loop"
 
-def run_task(task):
-    print(f"\n[START] task={task} model={MODEL_NAME}")
+step_count = 1  # since env is single-step
 
-    # RESET
+def run_task(task):
+    print(f"[START] task={task}", flush=True)
+
     res = safe_post(f"{BASE_URL}/reset", {"task": task})
     data = res.json()
 
     code = data["observation"]["code_snippet"]
 
-    print("\n[OBSERVATION]")
-    print(code)
-
-    # ACTION
     review = generate_review(code)
 
-    print("\n[ACTION]")
-    print(review)
-
-    # STEP
     res = safe_post(
         f"{BASE_URL}/step",
         {
@@ -114,13 +102,11 @@ def run_task(task):
     result = res.json()
 
     reward = result.get("reward", 0.0)
-    done = result.get("done", False)
 
-    print(f"\n[STEP] reward={reward} done={done}")
-    print(f"[END] task={task} reward={reward}")
+    print(f"[STEP] step=1 reward={reward}", flush=True)
+    print(f"[END] task={task} score={reward} steps=1", flush=True)
 
     return reward
-
 
 if __name__ == "__main__":
     if not check_server():
@@ -133,4 +119,4 @@ if __name__ == "__main__":
         score = run_task(task)
         total_score += score
 
-    print(f"\n🔥 FINAL SCORE: {total_score}/{len(tasks)}")
+    print(f"FINAL SCORE: {total_score}/{len(tasks)}")
