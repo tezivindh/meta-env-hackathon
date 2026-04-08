@@ -9,7 +9,13 @@ BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
 API_KEY = os.getenv("OPENAI_API_KEY")
 
-client = OpenAI(api_key=API_KEY)
+client = None
+if API_KEY:
+    try:
+        client = OpenAI(api_key=API_KEY)
+    except Exception as e:
+        print(f"[DEBUG] Failed to init OpenAI: {e}")
+        client = None
 
 
 def check_server():
@@ -35,6 +41,9 @@ def safe_post(url, json_data, retries=3):
 
 
 def llm_review(code: str) -> str:
+    if client is None:
+        return ""
+
     try:
         response = client.chat.completions.create(
             model=MODEL_NAME,
@@ -58,10 +67,11 @@ def llm_review(code: str) -> str:
         print(f"[DEBUG] LLM failed: {e}")
         return ""
 
-
 def generate_review(code: str) -> str:
     try:
         llm_output = llm_review(code)
+        if llm_output:
+            return llm_output
     except:
         llm_output = ""
 
