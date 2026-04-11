@@ -1,7 +1,7 @@
 ---
 title: Code Review Env Environment Server
-emoji: 📹
-colorFrom: green
+emoji: 📣
+colorFrom: blue
 colorTo: green
 sdk: docker
 pinned: false

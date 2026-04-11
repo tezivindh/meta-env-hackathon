@@ -4,13 +4,14 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree.
 
-"""Code Review Env Environment."""
+"""Code Review Environment for OpenEnv."""
 
-from .client import CodeReviewEnv
+from .client import CodeReviewEnvClient
 from .models import CodeReviewAction, CodeReviewObservation
 
 __all__ = [
     "CodeReviewAction",
     "CodeReviewObservation",
-    "CodeReviewEnv",
+    "CodeReviewEnvClient",
 ]
+

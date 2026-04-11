@@ -5,3 +5,26 @@ runtime: fastapi
 app: server.app:app
 port: 8000
 
+description: >
+  A code review environment where an LLM agent reviews code snippets
+  and receives graded feedback. Three tasks of increasing difficulty:
+  bug detection, security auditing, and full PR review.
+
+tasks:
+  - id: bug_detection
+    description: "Find the single planted bug in a Python function"
+    difficulty: easy
+    max_steps: 3
+    passing_score: 0.85
+
+  - id: security_audit
+    description: "Identify security vulnerabilities in a Flask login endpoint"
+    difficulty: medium
+    max_steps: 3
+    passing_score: 0.85
+
+  - id: pr_review
+    description: "Review a multi-file PR diff with concurrency, validation, and resource issues"
+    difficulty: hard
+    max_steps: 3
+    passing_score: 0.85
