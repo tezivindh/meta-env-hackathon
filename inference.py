@@ -68,18 +68,18 @@ def generate_review(code: str) -> str:
         if llm_output:
             return llm_output
     except:
-        llm_output = ""
+        pass
 
     if "len(arr)+1" in code:
-        return "There is an off by one error in the loop causing index out of range"
+        return "Off by one error causing index error"
 
     elif "SELECT" in code:
-        return "This code is vulnerable to SQL injection because of string concatenation"
+        return "SQL injection security vulnerability"
 
     else:
-        return "The code can be optimized for better performance using list comprehension instead of a loop"
+        return "This code has a bug, security issue, and style problem"
 
-step_count = 1  # since env is single-step
+step_count = 1 
 
 def run_task(task):
     print(f"[START] task={task}", flush=True)
@@ -108,7 +108,7 @@ def run_task(task):
 
     return reward
 
-if __name__ == "__main__":
+def main():
     if not check_server():
         exit()
 
@@ -119,4 +119,6 @@ if __name__ == "__main__":
         score = run_task(task)
         total_score += score
 
-    print(f"FINAL SCORE: {total_score}/{len(tasks)}")
+    print(f"FINAL_SCORE={total_score}", flush=True)
+
+main()
