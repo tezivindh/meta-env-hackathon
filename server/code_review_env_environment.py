@@ -32,7 +32,7 @@ try:
     from ..models import CodeReviewAction, CodeReviewObservation
     from .tasks import task_bug_detection, task_security_audit, task_pr_review
 except ImportError:
-    from ..models import CodeReviewAction, CodeReviewObservation
+    from models import CodeReviewAction, CodeReviewObservation
     from .tasks import task_bug_detection, task_security_audit, task_pr_review
 
 # How many attempts the agent gets per task
