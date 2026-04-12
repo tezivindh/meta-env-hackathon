@@ -1,0 +1,18 @@
+# Core OpenEnv runtime
+openenv-core>=0.2.2
+
+# Web server
+fastapi>=0.115.0
+uvicorn>=0.24.0
+
+# Data models
+pydantic>=2.0.0
+
+# LLM client (required by hackathon spec — must use OpenAI client)
+openai>=1.0.0
+
+# Async HTTP for health checks
+httpx>=0.24.0
+
+# Environment variables
+python-dotenv>=1.0.0
