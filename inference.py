@@ -168,12 +168,15 @@ async def run_task(client: OpenAI, task: str) -> float:
                 if done:
                     break
 
-            score   = min(max(sum(rewards) / MAX_TOTAL_REWARD, 0.0), 1.0)
+            raw_score = sum(rewards) / MAX_TOTAL_REWARD if MAX_TOTAL_REWARD > 0 else 0.0
+            score   = min(max(raw_score, 0.001), 0.999)
             success = score >= SUCCESS_SCORE_THRESHOLD
 
         except Exception as exc:
             print(f"[DEBUG] episode error: {exc}", flush=True)
+            score = 0.001
         finally:
+            score = min(max(score, 0.001), 0.999)
             log_end(success=success, steps=steps_taken,
                     score=score, rewards=rewards)
 
