@@ -40,6 +40,9 @@ DESCRIPTION_KEYWORDS = ["off by one", "wrong divisor", "incorrect denominator",
 FIX_KEYWORDS = ["len(numbers)", "remove + 1", "remove the + 1", "delete + 1",
                  "total / len", "/ len(numbers)"]
 
+MIN_SCORE = 0.01
+MAX_SCORE = 0.99
+
 
 def grade(review: str) -> tuple[float, str]:
     """
@@ -77,4 +80,6 @@ def grade(review: str) -> tuple[float, str]:
         feedback_parts.append("✗ Did not suggest a correct fix.")
 
     feedback = " | ".join(feedback_parts)
-    return round(score, 2), feedback
+    # Validator requires score to be strictly between 0 and 1.
+    clamped_score = min(max(round(score, 2), MIN_SCORE), MAX_SCORE)
+    return clamped_score, feedback
