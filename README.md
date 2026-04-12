@@ -82,7 +82,7 @@ The inference script runs all 3 tasks sequentially, logs results in the mandated
 
 ```bash
 # Build the Docker image
-docker build -t code_review_env:latest -f server/Dockerfile .
+docker build -t code_review_env:latest .
 
 # Run the container
 docker run -p 8000:8000 code_review_env:latest
@@ -204,7 +204,7 @@ The inference script outputs logs in the format required by the automated checke
 Run the pre-submission validator to check everything is working:
 
 ```bash
-./pre_validation.sh https://your-space.hf.space .
+./pre_validation.sh https://[username]-[spacename].hf.space
 ```
 
 This checks:
@@ -220,6 +220,7 @@ code_review_env/
 ├── README.md                # This file
 ├── requirements.txt         # All project dependencies
 ├── openenv.yaml             # OpenEnv manifest (tasks, config)
+├── Dockerfile               # Container image definition
 ├── pyproject.toml           # Project metadata and dependencies
 ├── client.py                # CodeReviewEnvClient (async WebSocket client)
 ├── models.py                # CodeReviewAction & CodeReviewObservation
@@ -230,7 +231,6 @@ code_review_env/
     ├── __init__.py          # Server module exports
     ├── app.py               # FastAPI app (HTTP + WebSocket via openenv)
     ├── code_review_env_environment.py  # Core RL environment logic
-    ├── Dockerfile           # Container image definition
     ├── requirements.txt     # Server-only dependencies (Docker build)
     └── tasks/
         ├── task_bug_detection.py    # 🟢 Easy — off-by-one bug
@@ -247,7 +247,7 @@ Before submitting, ensure you have:
 - [ ] `inference.py` in the root directory (named exactly this)
 - [ ] `README.md` with environment description, action/observation spaces, and setup instructions
 - [ ] Deployed Hugging Face Spaces URL with working demo
-- [ ] Pre-submission validation script passing: `./pre_validation.sh https://your-space.hf.space .`
+- [ ] Pre-submission validation script passing: `./pre_validation.sh https://[username]-[spacename].hf.space`
 - [ ] All env vars set: `API_BASE_URL`, `MODEL_NAME`, `HF_TOKEN`
 - [ ] Inference runtime < 20 minutes on vcpu=2 / 8GB RAM
 
