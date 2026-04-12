@@ -65,6 +65,9 @@ FIX_KEYWORDS = [
     "?", "%s", "hash", "bcrypt", "werkzeug", "check_password_hash"
 ]
 
+MIN_SCORE = 0.01
+MAX_SCORE = 0.99
+
 
 def grade(review: str) -> tuple[float, str]:
     """
@@ -110,4 +113,6 @@ def grade(review: str) -> tuple[float, str]:
         feedback_parts.append("✗ Did not suggest concrete fixes.")
 
     feedback = " | ".join(feedback_parts)
-    return round(score, 2), feedback
+    # Validator requires score to be strictly between 0 and 1.
+    clamped_score = min(max(round(score, 2), MIN_SCORE), MAX_SCORE)
+    return clamped_score, feedback
