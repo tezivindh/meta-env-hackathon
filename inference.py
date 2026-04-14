@@ -37,10 +37,10 @@ ENV_BASE_URL = os.getenv("ENV_BASE_URL", "http://127.0.0.1:8000")
 BENCHMARK               = "code_review_env"
 MAX_STEPS               = 3
 MAX_TOTAL_REWARD        = float(MAX_STEPS)   # reward per step is in [0, 1]
-SUCCESS_SCORE_THRESHOLD = 0.6
+SUCCESS_SCORE_THRESHOLD = 0.85
 TASKS                   = ["bug_detection", "security_audit", "pr_review"]
 TEMPERATURE             = 0.1
-MAX_TOKENS              = 400
+MAX_TOKENS              = 1024
 
 SYSTEM_PROMPT = textwrap.dedent(
     """
@@ -168,7 +168,7 @@ async def run_task(client: OpenAI, task: str) -> float:
                 if done:
                     break
 
-            raw_score = sum(rewards) / MAX_TOTAL_REWARD if MAX_TOTAL_REWARD > 0 else 0.0
+            raw_score = max(rewards) if rewards else 0.0
             score   = min(max(raw_score, 0.001), 0.999)
             success = score >= SUCCESS_SCORE_THRESHOLD
 
