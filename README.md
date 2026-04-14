@@ -19,11 +19,11 @@ The agent gets up to **3 attempts** per task. Each attempt is scored by a keywor
 
 ## Tasks
 
-| Task | Difficulty | Description | Passing Score |
-|------|-----------|-------------|:---:|
-| `bug_detection` | 🟢 Easy | Find a single planted bug in a Python function | 0.85 |
-| `security_audit` | 🟡 Medium | Identify 2 security vulnerabilities in a Flask login endpoint | 0.85 |
-| `pr_review` | 🔴 Hard | Review a multi-file PR with 3 issues (concurrency, validation, resources) | 0.85 |
+| Task             | Difficulty | Description                                                               | Passing Score |
+| ---------------- | ---------- | ------------------------------------------------------------------------- | :-----------: |
+| `bug_detection`  | 🟢 Easy    | Find a single planted bug in a Python function                            |     0.85      |
+| `security_audit` | 🟡 Medium  | Identify 2 security vulnerabilities in a Flask login endpoint             |     0.85      |
+| `pr_review`      | 🔴 Hard    | Review a multi-file PR with 3 issues (concurrency, validation, resources) |     0.85      |
 
 ## Quick Start
 
@@ -99,6 +99,7 @@ openenv push --repo-id my-org/code-review-env --private
 ```
 
 After deployment, your space will be available at `https://huggingface.co/spaces/<repo-id>` with:
+
 - **Web Interface** at `/web` — interactive UI for exploring the environment
 - **API Docs** at `/docs` — full OpenAPI/Swagger interface
 - **Health Check** at `/health` — container health monitoring
@@ -110,23 +111,23 @@ After deployment, your space will be available at `https://huggingface.co/spaces
 
 **`CodeReviewAction`** — what the agent sends to the environment:
 
-| Field | Type | Description |
-|-------|------|-------------|
+| Field    | Type  | Description                  |
+| -------- | ----- | ---------------------------- |
 | `review` | `str` | The agent's code review text |
 
 ### Observation
 
 **`CodeReviewObservation`** — what the environment returns:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `code_snippet` | `str` | The code the agent must review |
-| `task_type` | `str` | `"bug_detection"`, `"security_audit"`, or `"pr_review"` |
-| `task_description` | `str` | Plain English instructions for the task |
-| `feedback` | `str` | Grader feedback on the last review (empty on reset) |
-| `score` | `float` | Score for the last submission (0.0–1.0) |
-| `done` | `bool` | Whether the episode has ended |
-| `reward` | `float` | Reward for this step (equals score) |
+| Field              | Type    | Description                                             |
+| ------------------ | ------- | ------------------------------------------------------- |
+| `code_snippet`     | `str`   | The code the agent must review                          |
+| `task_type`        | `str`   | `"bug_detection"`, `"security_audit"`, or `"pr_review"` |
+| `task_description` | `str`   | Plain English instructions for the task                 |
+| `feedback`         | `str`   | Grader feedback on the last review (empty on reset)     |
+| `score`            | `float` | Score for the last submission (0.0–1.0)                 |
+| `done`             | `bool`  | Whether the episode has ended                           |
+| `reward`           | `float` | Reward for this step (equals score)                     |
 
 ### Episode Flow
 
@@ -144,42 +145,42 @@ Episode ends when: score ≥ 0.85 (passed) OR 3 steps used
 
 The agent reviews a `calculate_average()` function with an off-by-one division bug.
 
-| Criterion | Points | What the grader checks |
-|-----------|:------:|----------------------|
-| Location | 0.40 | Mentions `len(numbers) + 1`, `+ 1`, or the return line |
-| Description | 0.30 | Explains what the bug does (off-by-one, wrong divisor, etc.) |
-| Fix | 0.30 | Suggests using `len(numbers)` without `+ 1` |
+| Criterion   | Points | What the grader checks                                       |
+| ----------- | :----: | ------------------------------------------------------------ |
+| Location    |  0.40  | Mentions `len(numbers) + 1`, `+ 1`, or the return line       |
+| Description |  0.30  | Explains what the bug does (off-by-one, wrong divisor, etc.) |
+| Fix         |  0.30  | Suggests using `len(numbers)` without `+ 1`                  |
 
 ### 🟡 Security Audit (Medium)
 
 The agent reviews a Flask `/login` endpoint with SQL injection and plaintext passwords.
 
-| Criterion | Points | What the grader checks |
-|-----------|:------:|----------------------|
-| SQL Injection | 0.35 | Identifies the SQL injection via string formatting |
-| Impact | 0.25 | Explains why it's dangerous (bypass auth, dump data, etc.) |
-| Plaintext Password | 0.25 | Identifies passwords stored/compared in plaintext |
-| Fixes | 0.15 | Suggests parameterized queries or password hashing |
+| Criterion          | Points | What the grader checks                                     |
+| ------------------ | :----: | ---------------------------------------------------------- |
+| SQL Injection      |  0.35  | Identifies the SQL injection via string formatting         |
+| Impact             |  0.25  | Explains why it's dangerous (bypass auth, dump data, etc.) |
+| Plaintext Password |  0.25  | Identifies passwords stored/compared in plaintext          |
+| Fixes              |  0.15  | Suggests parameterized queries or password hashing         |
 
 ### 🔴 PR Review (Hard)
 
 The agent reviews a 3-file PR diff with a race condition, missing validation, and a resource leak.
 
-| Criterion | Points | What the grader checks |
-|-----------|:------:|----------------------|
-| Race Condition | 0.30 | Identifies the thread-unsafe counter in `analytics.py` |
-| Input Validation | 0.25 | Identifies missing checks for negative quantity/price |
-| Resource Leak | 0.25 | Identifies the unclosed file handle in `reporter.py` |
-| Review Quality | 0.20 | Uses severity labels, priorities, and recommendations (3+ quality keywords) |
+| Criterion        | Points | What the grader checks                                                      |
+| ---------------- | :----: | --------------------------------------------------------------------------- |
+| Race Condition   |  0.30  | Identifies the thread-unsafe counter in `analytics.py`                      |
+| Input Validation |  0.25  | Identifies missing checks for negative quantity/price                       |
+| Resource Leak    |  0.25  | Identifies the unclosed file handle in `reporter.py`                        |
+| Review Quality   |  0.20  | Uses severity labels, priorities, and recommendations (3+ quality keywords) |
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|:--------:|-------------|
-| `API_BASE_URL` | ✅ | LLM API endpoint (e.g. `https://api.groq.com/openai/v1`) |
-| `MODEL_NAME` | ✅ | Model identifier (e.g. `llama-3.1-8b-instant`) |
-| `HF_TOKEN` | ✅ | API key for the LLM provider |
-| `ENV_BASE_URL` | ❌ | Environment server URL (default: `http://127.0.0.1:8000`) |
+| Variable       | Required | Description                                               |
+| -------------- | :------: | --------------------------------------------------------- |
+| `API_BASE_URL` |    ✅    | LLM API endpoint (e.g. `https://api.groq.com/openai/v1`)  |
+| `MODEL_NAME`   |    ✅    | Model identifier (e.g. `llama-3.1-8b-instant`)            |
+| `HF_TOKEN`     |    ✅    | API key for the LLM provider                              |
+| `ENV_BASE_URL` |    ❌    | Environment server URL (default: `http://127.0.0.1:8000`) |
 
 ## Stdout Logging Format
 
@@ -189,12 +190,13 @@ The inference script outputs logs in the format required by the automated checke
 [START] task=bug_detection env=code_review_env model=llama-3.1-8b-instant
 [STEP]  step=1 action='Line 7 has a bug...' reward=0.70 done=false error=null
 [STEP]  step=2 action='The return statement...' reward=0.99 done=true error=null
-[END]   success=true steps=2 score=0.563 rewards=0.70,0.99
+[END]   success=true steps=2 score=0.990 rewards=0.70,0.99
 ```
 
 ## Infrastructure Restrictions
 
 > [!WARNING]
+>
 > - **Runtime** of `inference.py` must be **less than 20 minutes**
 > - Environment and inference must run on a machine with **vcpu=2, memory=8GB**
 > - All LLM calls must use the **OpenAI client** with the `API_BASE_URL`, `MODEL_NAME`, and `HF_TOKEN` env vars
@@ -208,6 +210,7 @@ Run the pre-submission validator to check everything is working:
 ```
 
 This checks:
+
 1. ✅ HF Space is live and responds to `/reset`
 2. ✅ Docker image builds successfully
 3. ✅ `openenv validate` passes
@@ -218,6 +221,7 @@ This checks:
 code_review_env/
 ├── __init__.py              # Package exports
 ├── README.md                # This file
+├── LICENSE                  # BSD-3-Clause License
 ├── requirements.txt         # All project dependencies
 ├── openenv.yaml             # OpenEnv manifest (tasks, config)
 ├── Dockerfile               # Container image definition
